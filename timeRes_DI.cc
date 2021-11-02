@@ -13,6 +13,13 @@
 #include "TGraphErrors.h"
 #include "TPad.h"
 
+// Track total memory in use 
+
+#include "sys/types.h"
+#include "sys/sysinfo.h"
+
+struct sysinfo memInfo;
+
 using namespace std;
 
 struct anEvent{
@@ -251,7 +258,7 @@ vector<int> xbins{18,31,41,51};
      }
 
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]){ 
 
   TFile *fout = new TFile(Form("./output_timeRes/Run_%s_DItest1.root",argv[1]),"RECREATE");  
   TFile *infile = TFile::Open(Form("/afs/cern.ch/user/a/amkrishn/private/summer_2021_BTL/BTL_analysis_UVa_Sasha/skims/Run_%s_bar0E00.root",argv[1]), "READ");
@@ -296,9 +303,27 @@ int main(int argc, char* argv[]){
   Long64_t nentries = mytree->GetEntries();
   
   for (int ith=-10; ith > -151; ith+= -5) {
+    std::cout << "ith: " << ith << std::endl; 
 
     Initialize();
     int count = 0;
+
+    sysinfo (&memInfo);
+
+    long long totalPhysMem = memInfo.totalram;
+    //Multiply in next statement to avoid int overflow on right hand side...
+    totalPhysMem *= memInfo.mem_unit;  
+
+    long long physMemUsed = memInfo.totalram - memInfo.freeram;
+    //Multiply in next statement to avoid int overflow on right hand side...
+    physMemUsed *= memInfo.mem_unit;
+
+    std::cout << "totalPhysMem: " << totalPhysMem << std::endl;
+    std::cout << "physMemUsed: " << physMemUsed << std::endl;
+
+    double pcttotalPhysMemUsed = (float)physMemUsed / (float)totalPhysMem; 
+
+    std::cout << "Percentage of total Available RAM in use: " << pcttotalPhysMemUsed << std::endl; 
 
     //TH1F *htRes_diff = new TH1F(Form("htRes_diff_th%d",ith), "tRes_diff; time (ns)", 100, -1.5, 1.5);
     TH1F *htRes_diff_xposCorrected = new TH1F(Form("htRes_diff_xposCorrected_th%d",ith), "(t0 - t1)/2 after position correction; time (ns)", 200, -0.2, 0.2);
@@ -325,6 +350,7 @@ int main(int argc, char* argv[]){
     //fit_ampwalk->SetParameter(0,7.7);
 
     for (Long64_t jentry=0; jentry<nentries;jentry++) {
+
       mytree->GetEntry(jentry);
       if (jentry % 1000 == 0) cout << "Processing Event " << jentry << " of " << nentries << "\n";
 
