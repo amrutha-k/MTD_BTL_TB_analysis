@@ -2,7 +2,7 @@
 
 To run:
 
-#+BEGIN_EXAMPLE
+#+ BEGIN_EXAMPLE
 g++ `root-config --glibs --cflags` timeRes_DI.cc 
 ./a.out 46076
-#+END_EXAMPLE
+#+ END_EXAMPLE
