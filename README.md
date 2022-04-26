@@ -1,5 +1,5 @@
-# Lab5015Analysis
-collection of programs for the analysis of Lab5015 measurements
+# MTD BTL TB analysis
+Based on Lab5015/Lab5015Analysis. Codes adapted for spatial uniformity studies of sensor modules in MTD BTL TB at CERN (Oct2021)
 
 
 
@@ -32,8 +32,10 @@ This package is structured as follows
 - `cfg`: contains the config files which are used to pass parameters to the executables
 
 After the compilation, each step of the analysis can be executed from the main folder `Lab5015Analysis` with a command like:
-`./bin/executable cfg/configfile`
-
+```
+./bin/executable cfg/configfile
+eg: ./bin/moduleCharacterization_step1.cpp cfg/moduleCharacterization.cfg
+```
 
 
 ### Before running the analysis
@@ -74,18 +76,12 @@ example:
 ./bin/drawPulseShape.exe cfg/drawPulseShape_HPK_2E14_52deg_T-40C_Vov1.50.cfg`
 ```
 
+Note: moduleCharacterization_step1_new.cpp and moduleCharacterization_step2_new.cpp are 1 and 2 adapted to include MCP information. Use config file cfg/moduleCharacterization_HPK_MCP.cfg
 
-### Submit the analysis in parallel on pcfatis
-A script under the `scripts` folder allows the submission of multiple jobs (e.g. a set of runs corresponding to an overvoltage/threshold scan) in parallel on `pcfatis`. one job per run. The script is used as follows:
-```
-python scripts/submit_moduleCharacterization.py --label myTask_stepX -b /path/of/Lab5015Analysis -e bin/moduleCharacterization_stepX.exe -r run1-run2,run3 -c cfg/moduleCharacterization.cfg --submit
-```
-The config file is used as a template for each job, and the run number and file names in it are modified by the script as required. The command can be executed without the `--submit` flag first to inspect the jobs (in the `scripts/jobs` folder) before actually running them.
+### Results and Documentation
 
-
-
-### Visualize the results
-All the results are available for inspection on a website hosted on pcfatis. The [link](http://pcfatis.mib.infn.it) is accessible from the INFN network or via tunnel.
+    - [BTL TB analysis working meeting, 18 March 2022](https://indico.cern.ch/event/1140648/contributions/4786478/attachments/2410506/4124651/BTL_OCT_TB%20analysis%20meeting_status%20update%20_18March.pdf).
+    
 
 
 
